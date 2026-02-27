@@ -2,7 +2,7 @@ import Navbar from "@/scenes/navbar"
 import BuyNow from "@/scenes/buynow"
 import AboutUs from "@/scenes/aboutus"
 import OurTeam from "@/scenes/ourteam"
-import Prize from "@/scenes/prize"
+//simport Prize from "@/scenes/prize"
 import HomePageGraphic from "@/assets/jeans.jpg"
 import { useEffect, useState } from "react";
 

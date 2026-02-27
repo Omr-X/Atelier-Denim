@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './MainPage';
 import AboutUs from './Yapping';
 import Basket from './basket';
-import Donation from './Donation';
+//import Donation from './Donation';
 import SacJean from './SacJean';
 
 function App() {
