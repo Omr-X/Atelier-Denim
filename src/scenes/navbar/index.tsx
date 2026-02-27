@@ -43,8 +43,8 @@ const Navbar = ({isTopOfPage, selectedPage, setSelectedPage}: Props) => {
                 <Link page="Acheter" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
                 <Link page="À Propos" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
                 <Link page="Notre Équipe" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-                <Link page="Prix" selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
-                <Link page="Donation" selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
+               { /* <Link page="Prix" selectedPage={selectedPage} setSelectedPage={setSelectedPage}/> */}
+               { /*<Link page="Donation" selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>*/}
               </div>
               <div className="flex items-center gap-8">
                 <button onClick={()=>navigate('/cart')}>

@@ -3,16 +3,9 @@ import { useState } from 'react'
 import useMediaQuery from "@/Hooks/useMediaQuery";
 
 const team = [
-  { name: 'Simone Regnault', role: 'Presidente' },
-  { name: 'Omar Basfaou', role: "VP RH et DD" },
-  { name: 'Ahmed Miloudi', role: 'VP Ventes' },
-  { name: 'Malik Grim', role: 'VP Communication'},
-  { name: 'Adam Leung', role: 'VP Finance'},
-  { name: 'Zackary Messissi', role: 'VP Production'},
-  { name: 'Melia Chau' },
-  { name: 'Sacha Suffrin'},
-  { name: 'Aurelien Martinez' },
-  { name: 'Walid Dmimer'}
+  { name: 'Simone Regnault'},
+  { name: 'Omar Basfaou'},
+  { name: 'Melia Chau' }
 ]
 
 type Props = {
@@ -28,7 +21,9 @@ const ourteam = ({ setSelectedPage }: Props) => {
   
   return (
     <section id="notreéquipe" className="bg-secondary-100 py-20">
-      <motion.div className="flex items-center justify-center gap-20 p-40" onViewportEnter={() => setSelectedPage("notreéquipe")}>
+      {/* Added title */}
+      <h1 className="text-center text-4xl font-bold text-primary-100">Notre équipe</h1>
+      <motion.div className="flex items-center justify-center gap-20 px-40 pb-40 pt-20" onViewportEnter={() => setSelectedPage("notreéquipe")}>
         {/* Left Arrow */}
         <button onClick={prev} className="text-6xl text-primary-100">←</button>
         
@@ -59,7 +54,6 @@ const ourteam = ({ setSelectedPage }: Props) => {
           >
             <div className="w-64 h-64 rounded-full bg-blue-600 border-8 border-white shadow-xl" />
             <p className="mt-6 text-3xl font-bold text-primary-100">{team[activeIndex].name}</p>
-            <p className="text-xl text-secondary-200 mt-2">{team[activeIndex].role}</p>
           </motion.div>
           
           {/* Right Member - Only show on larger screens */}

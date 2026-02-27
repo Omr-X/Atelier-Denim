@@ -56,7 +56,7 @@ function App() {
       <BuyNow setSelectedPage={setSelectedPage}/>
       <AboutUs setSelectedPage={setSelectedPage}/>
       <OurTeam setSelectedPage={setSelectedPage}/>
-      <Prize setSelectedPage={setSelectedPage}/>
+      {/*<Prize setSelectedPage={setSelectedPage}/>*/}
     </div>
   </div>
 </div>

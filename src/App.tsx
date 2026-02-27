@@ -12,7 +12,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/cart" element = {<Basket />}/>
-        <Route path="/donation" element = {<Donation/>}/>
+        {/*<Route path="/donation" element = {<Donation/>}/>*/}
         <Route path="/SacJean" element={<SacJean />} />
       </Routes>
     </BrowserRouter>
