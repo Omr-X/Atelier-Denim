@@ -1,5 +1,6 @@
-import{ useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { PayPalButtons } from '@paypal/react-paypal-js'
 
 type BasketItem = {
   id: number
@@ -18,7 +19,6 @@ const basket = () => {
   });
 
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const [checkoutHover, setCheckoutHover] = useState(false)
 
   useEffect(() => {
     localStorage.setItem(BASKET_KEY, JSON.stringify(basketItems));
@@ -43,46 +43,6 @@ const basket = () => {
 
   const total = basketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
-  const handlePayPalCheckout = () => {
-    if (basketItems.length === 0) {
-      alert('Your basket is empty');
-      return;
-    }
-
-    const form = document.createElement('form');
-    form.action = 'https://www.paypal.com/cgi-bin/webscr';
-    form.method = 'POST';
-    form.target = '_blank';
-
-    const fields: Record<string, string> = {
-      'cmd': '_cart',
-      'upload': '1',
-      'business': 'omarbasfaou@gmail.com',
-      'currency_code': 'CAD',
-      'return': window.location.href,
-      'cancel_return': window.location.href
-    };
-
-    basketItems.forEach((item, index) => {
-      const i = index + 1;
-      fields[`item_name_${i}`] = item.name;
-      fields[`amount_${i}`] = item.price.toFixed(2);
-      fields[`quantity_${i}`] = item.quantity.toString();
-    });
-
-    Object.keys(fields).forEach(key => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = fields[key];
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-  }
-  
   return (
     <div style={{ 
       minHeight: '100vh',
@@ -131,17 +91,17 @@ const basket = () => {
           </div>
 
           <div style={{
-  background: 'rgba(240, 189, 14, 0.15)',
-  border: '1px solid rgba(240, 189, 14, 0.5)',
-  borderRadius: '12px',
-  padding: '16px 24px',
-  margin: '24px 40px 40px 40px',
-  color: '#F0BD0E',
-  fontSize: '16px',
-  textAlign: 'center'
-}}>
-  * Après votre achat, nous vous contacterons rapidement pour vous tenir au courant du processus fabrication et pour convenir d'un lieu de remise.
-</div>
+            background: 'rgba(240, 189, 14, 0.15)',
+            border: '1px solid rgba(240, 189, 14, 0.5)',
+            borderRadius: '12px',
+            padding: '16px 24px',
+            margin: '24px 40px 40px 40px',
+            color: '#F0BD0E',
+            fontSize: '16px',
+            textAlign: 'center'
+          }}>
+            * Après votre achat, nous vous contacterons rapidement pour vous tenir au courant du processus fabrication et pour convenir d'un lieu de remise.
+          </div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {basketItems.length === 0 ? (
@@ -314,38 +274,43 @@ const basket = () => {
               </span>
             </div>
 
-            <button
-              onMouseEnter={() => setCheckoutHover(true)}
-              onMouseLeave={() => setCheckoutHover(false)}
-              disabled={basketItems.length === 0}
-              onClick={handlePayPalCheckout}
-              style={{
-                width: '100%',
-                padding: '16px',
-                background: basketItems.length === 0 
-                  ? 'rgba(240, 189, 14, 0.3)' 
-                  : (checkoutHover ? '#D7A600' : '#F0BD0E'),
-                color: '#001248',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: basketItems.length === 0 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s ease',
-                marginBottom: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                opacity: basketItems.length === 0 ? 0.5 : 1
-              }}
-            >
-              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 00-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 01-.794.679H7.72a.483.483 0 01-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.75-2.203 8.796-6.502z"/>
-                <path d="M2.379 5.479C3.527 1.918 5.51.454 9.455.454h5.159c.936 0 1.817.194 2.584.568.532.26.968.591 1.297.992.17.206.31.428.422.666.226.476.355 1.004.39 1.586L19.5 5.6c0-.084-.002-.168-.007-.253.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 00-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 01-.794.679H7.72a.483.483 0 01-.477-.558l.176-1.11.95-6.019 1.385.001c4.678 0 7.75-2.203 8.796-6.503z"/>
-              </svg>
-              Pay with PayPal
-            </button>
+            {/* CHANGED: added forceReRender, onCancel, onError */}
+            {basketItems.length > 0 && (
+              <PayPalButtons
+                style={{ layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay' }}
+                forceReRender={[total]}
+                createOrder={(_data, actions) => {
+                  return actions.order.create({
+                    intent: 'CAPTURE',
+                    purchase_units: [{
+                      amount: {
+                        currency_code: 'CAD',
+                        value: total.toFixed(2),
+                        breakdown: {
+                          item_total: { currency_code: 'CAD', value: total.toFixed(2) }
+                        }
+                      },
+                      items: basketItems.map(item => ({
+                        name: item.name,
+                        unit_amount: { currency_code: 'CAD', value: item.price.toFixed(2) },
+                        quantity: item.quantity.toString()
+                      }))
+                    }]
+                  })
+                }}
+                onApprove={(_data, actions) => {
+                  return actions.order!.capture().then(() => {
+                    clearBasket()
+                    alert('Payment successful! We will contact you shortly.')
+                  })
+                }}
+                onCancel={() => alert('Payment cancelled.')}
+                onError={(err) => {
+                  console.error('PayPal error:', err)
+                  alert('Something went wrong with PayPal. Please try again.')
+                }}
+              />
+            )}
 
             <button
               onClick={clearBasket}
@@ -359,7 +324,8 @@ const basket = () => {
                 fontSize: '14px',
                 fontWeight: '500',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                marginTop: '12px'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'rgba(220, 38, 38, 0.3)'
